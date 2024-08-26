@@ -21,7 +21,7 @@ on:
           - 'yes'
           - 'no'
       run_parallel_tests:
-        description: 'Do you want to run multiple tests in parallel?'
+        description: 'Do you want to run tests in parallel?'
         required: true
         default: 'no'
         type: choice
@@ -29,15 +29,20 @@ on:
           - 'yes'
           - 'no'
       parallel_test_count:
-        description: 'Number of parallel tests to run (only if running in parallel)'
+        description: 'How many times do you want to run the tests in parallel?'
         required: false
         type: number
 
 jobs:
   test:
+    if: ${{ github.event.inputs.run_parallel_tests == 'no' || github.event.inputs.parallel_test_count }}
     timeout-minutes: 60
     runs-on: ${{ github.event.inputs.os }}
-   
+    strategy:
+      matrix:
+        parallel_run: [1] # Default single run
+        include: |
+          ${{ github.event.inputs.parallel_test_count | range | join(",") }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,13 +56,8 @@ jobs:
         run: npx playwright install --with-deps
       
       - name: Run Playwright tests
-        run: |
-          if [ "${{ github.event.inputs.run_parallel_tests }}" == "yes" ]; then
-            npm test -- --maxWorkers=${{ github.event.inputs.parallel_test_count }}
-          else
-            npm test
-          fi
-      
+        run: npm test
+
       - name: Upload test report
         uses: actions/upload-artifact@v4
         if: ${{ github.event.inputs.create_report == 'yes' }}
