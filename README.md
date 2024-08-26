@@ -1,5 +1,8 @@
 # Playwright-TS-Cucumber-Web 
 
+![download (2)](https://github.com/user-attachments/assets/947c97eb-5805-4919-be44-6d695eee2a65)
+
+
 Playwright-TS-Cucumber-Web is an advanced and highly efficient test automation framework designed to revolutionize your testing process. Our framework is meticulously crafted to optimize the testing workflow, providing you with a seamless experience and powerful testing capabilities.
 
 Key Features:
@@ -71,11 +74,10 @@ npm install
 # Reports 📄 
 **Playwright-TS-Cucumber-Web** implements `multiple-cucumber-html-reporter` to generate reports in HTML format.
 
-Dashboard construido por  (https://github.com/WasiqB/multiple-cucumber-html-reporter)
 
-![image](https://github.com/armadaautomationteam/Project-Infinite/assets/149462281/488be936-d54c-49f6-8ce6-01f8fd29b9c0)
+![image](https://github.com/user-attachments/assets/1b9ad46e-38e6-4339-aae2-ea22e810accd)
 
-![image](https://github.com/armadaautomationteam/Project-Infinite/assets/149462281/5ce3bc7f-446a-41c4-be8b-a885cf9edf5f)
+![image](https://github.com/user-attachments/assets/2ea645fd-0fb0-4d0d-89d2-163519e9b8be)
 
 
 # Features Design ⌨️
@@ -83,50 +85,25 @@ Dashboard construido por  (https://github.com/WasiqB/multiple-cucumber-html-repo
 Features:
 
 ```cucumber
-Feature: TestLogin
- Como usuario quiero iniciar 
- secion .
+Feature: Login Functionality
 
-Background:
-  Given El usuario abrio la url "https://sso.lirmi.dev/login"
-  Given Completa el  campo Username con "estudiante"
-  And Completa el campo password con "Contraseña"
-  When Presiona el boton "Submit" 
+  As a user, I want to be able to log in to the application
+  so that I can access my account.
+
+  Background:
+    Given the login page is displayed
+
   
+  Scenario Outline: User logs in with valid and invalid credentials
+    When the user enters the username "<username>" and the password "<password>"
+    And the user clicks on the login button
+    Then the user should see "<message>"
 
-Scenario: Positive Planificacion test
-  When El usuario Presiona el boton mis planificaciones "Mis planificaciones"
+    Examples:
+      | username      | password      | message                   |
+      | student       | Password123   | Logged In Successfully    |
+      | student23     | Password12345 | Your username is invalid! |
 
-
-Scenario: Positive Aplicar Evaluación test
-  When El usuario Presiona el boton Aplicar Evaluacion "Aplicar evaluación"
-
-Scenario: Positive Crear Evaluación test
-  When Presiona el boton crear evaluacion "Crear evaluación"
-
-Scenario: Positive  Evaluaciones Estandarizadas test
- When Presiona el boton evaluaciones estandarizadas "Evaluacion estandarizadas"
-
-Scenario: Positive Mis Evaluaciones test
- When Presiona el boton mis evaluaciones "Mis evaluacions"
-
-Scenario: Positive Matrícula test
- When Presiona el boton matricula "Matrícula"
-
-Scenario: Positive Asistencia test
- When Presiona el boton asistencia "Asistencia"
-
-Scenario: Positive Calificaciones test
- When Presiona el boton calificaciones "Calificaciones"
-
-Scenario: Positive Registro de Actividades test
- When Presiona el boton registro de actividades "Registro de Actividades"
-
-Scenario: Positive Ficha de Estudiante test
- When Presiona el boton ficha de estudiantes "Ficha de Estudiantes"
-
- Scenario: Positive Certificados test
- When Presiona el boton certificados "Certificados"
 
 ```
 
@@ -134,36 +111,44 @@ Steps:
 
 ```typescript
 
-import {Given,When,Then, After} from "@cucumber/cucumber"
-import {chromium,Page,Browser } from "@playwright/test";
+import {AfterAll, Given,Then,When,setDefaultTimeout} from "@cucumber/cucumber"
+import { expect  } from "@playwright/test";
+import { pageFixture } from "../../hooks/pageFixture";
 
-let browser: Browser;
-let page: Page;
+setDefaultTimeout(60 * 1000 * 2)
 
-Given('El usuario abrio la url {string}', async function (string) {
-  browser = await chromium.launch({ headless:false});
-  page = await browser.newPage();
-  await page.goto("https://sso.lirmi.dev/login"); 
-});
-
-Given('Completa el  campo Username con {string}', async function (string) {
-  const emailInput = await page.locator('//*[@id="email"]');
-  await emailInput.fill('randomname@gmail.com');
+Given('the login page is displayed', async function () {
+  await pageFixture.page.goto("https://practicetestautomation.com/practice-test-login/"); 
 });
 
 
-Given('Completa el campo password con {string}', async function (string) {
-  const contraseñaInput = await page.locator('//*[@id="password"]');
-  await contraseñaInput.fill('contraseña28');
+When(/^the user enters the username "([^"]*)" and the password "([^"]*)"$/, async function (username: string, password:string) {
+  const usernameInput = await pageFixture.page.locator('//*[@id="username"]');
+  await usernameInput.fill(username);
+  const passwordInput = await pageFixture.page.locator('//*[@id="password"]');
+  await passwordInput.fill(password);
+});
 
+When(/^the user clicks on the login button$/, async () => {
+  const submitButton = await pageFixture.page.locator('//*[@id="submit"]');
+  await submitButton.click();
+});
+Then(/^the user should see "([^"]*)"$/, async function (expectedMessage: string) {
+  let actualMessage: string | null = null;
+
+  try {
+      const errorLocator = await pageFixture.page.locator('//*[@id="error"]');
+      actualMessage = await errorLocator.textContent();
+  } catch (error) {
+      const successLocator = await pageFixture.page.locator('//*[@id="loop-container"]/div/article/div[1]/h1');
+      actualMessage = await successLocator.textContent();
+  }
+
+  expect(actualMessage).toBe(expectedMessage);
 });
 
 
-When('Presiona el boton {string}', async function (string) {
-  const submitButton = await page.locator('//*[@id="submit"]/span[1]');
- await submitButton.click();
 
-});
 
 ```
 Run Test :
@@ -171,10 +156,8 @@ Run Test :
 ```bash
 npm run test
 ```
-![image](https://github.com/armadaautomationteam/Project-Infinite/assets/149462281/63c1e93f-4e27-41ed-b6ca-703534605993)
 
 
 
-
-# Autor 🛠️
-armadaautomation31@gmail.com
+# Author 🛠️
+www.linkedin.com/in/thiago-tobias-turk-4462542a9
