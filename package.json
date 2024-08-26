@@ -1,0 +1,21 @@
+{
+  "name": "project-infinite",
+  "version": "1.0.0",
+  "description": "This is a repository made up of Playwright-TS-Po-Web",
+  "main": "index.js",
+  "scripts": {
+    "pretest": " npx tsc printFile.ts & node printFile.js",
+    "test": "cucumber-js test || true",
+    "posttest": "npx ts-node src/helper/reports.ts"
+  },
+  "keywords": [],
+  "author": "Automation Armada",
+  "license": "ISC",
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.3.2",
+    "@playwright/test": "^1.43.0",
+    "@types/node": "^20.12.4",
+    "multiple-cucumber-html-reporter": "^3.6.2",
+    "ts-node": "^10.9.2"
+  }
+}
