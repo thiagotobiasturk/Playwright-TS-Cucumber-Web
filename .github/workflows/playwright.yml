@@ -1,16 +1,43 @@
 name: Playwright Tests
+
 on:
-  push:
-    branches: [ develop, master ]
-  pull_request:
-    branches: [ develop, master ]
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Choose the OS for the workflow'
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - 'ubuntu-latest'
+          - 'windows-latest'
+          - 'macOS-latest'
+      create_report:
+        description: 'Do you want to create and upload the test report?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      run_parallel_tests:
+        description: 'Do you want to run multiple tests in parallel?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      parallel_test_count:
+        description: 'Number of parallel tests to run (only if running in parallel)'
+        required: false
+        type: number
+
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [firefox, chromium, webkit]
+    runs-on: ${{ github.event.inputs.os }}
+   
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,11 +51,16 @@ jobs:
         run: npx playwright install --with-deps
       
       - name: Run Playwright tests
-        run: npm test -- --project=${{ matrix.browser }}
+        run: |
+          if [ "${{ github.event.inputs.run_parallel_tests }}" == "yes" ]; then
+            npx playwright test --workers=${{ github.event.inputs.parallel_test_count }}
+          else
+            npx playwright test
+          fi
       
       - name: Upload test report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ github.event.inputs.create_report == 'yes' }}
         with:
           name: playwright-report
           path: |
