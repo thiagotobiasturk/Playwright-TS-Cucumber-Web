@@ -1,4 +1,4 @@
-./node_modules
-./test-results
-./assets
-./featuresw
+/node_modules/
+/test-results/
+/assets/
+/wfeatures/
