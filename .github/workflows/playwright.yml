@@ -40,8 +40,7 @@ jobs:
     runs-on: ${{ github.event.inputs.os }}
     strategy:
       matrix:
-        parallel_run: [1]  
-      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
+        parallel_run: ${{ fromJSON(github.event.inputs.parallel_test_count) }} # Convert the input to a number
     if: ${{ github.event.inputs.run_parallel_tests == 'yes' }}
     steps:
       - uses: actions/checkout@v4
