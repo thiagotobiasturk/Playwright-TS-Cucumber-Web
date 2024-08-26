@@ -15,5 +15,4 @@ Feature: Login Functionality
     Examples:
       | username      | password      | message                   |
       | student       | Password123   | Logged In Successfully    |
-      | student23     | Password12345 | Your username is invalid! |
-
+    

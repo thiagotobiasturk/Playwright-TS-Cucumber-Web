@@ -3,8 +3,8 @@ const report = require("multiple-cucumber-html-reporter");
 report.generate({
   jsonDir: "test-results",
   reportPath: "./",
-  reportName:"Playwright Automation Report",
-  pageTitle: "Infinite app test report",
+  reportName:"Playwrigth-Ts-Cucumber-Web Automation Report",
+  pageTitle: "Playwrigth-Ts-Cucumber-Web test report",
   displayDuration: false,
   metadata: {
     browser: {
@@ -20,7 +20,7 @@ report.generate({
   customData: {
     title: "test info",
     data: [
-      { label: "Project", value: " project infinite" },
+      { label: "Project", value: " Playwrigth-Ts-Cucumber-Web" },
       { label: "Release", value: "1.2.3" },
       { label: "Cycle", value: "Smoke-1" },
     //   { label: "Execution Start Time", value: "Nov 19th 2017, 02:31 PM EST" },
