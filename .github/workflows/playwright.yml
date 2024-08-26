@@ -29,6 +29,6 @@ jobs:
       with:
         name: playwright-report
         path: | 
-             test-results/
-             test-result/
+             assets/
+             features/
              index.html
