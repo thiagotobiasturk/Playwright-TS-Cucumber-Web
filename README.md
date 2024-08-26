@@ -1,121 +1,75 @@
-# Project-Infinite 🚀(En desarrollo)
+# Playwright-TS-Cucumber-Web 
 
-Project Infinite  es un marco de pruebas de automatización avanzado y altamente eficiente diseñado para revolucionar su proceso de pruebas. Nuestro marco está meticulosamente elaborado para optimizar el flujo de trabajo de pruebas, brindándole una experiencia sin problemas y capacidades de pruebas poderosas.
+Playwright-TS-Cucumber-Web is an advanced and highly efficient test automation framework designed to revolutionize your testing process. Our framework is meticulously crafted to optimize the testing workflow, providing you with a seamless experience and powerful testing capabilities.
 
-Características Clave:
+Key Features:
 
-Integración de Playwright: Aproveche todo el potencial de Playwright para automatizar interacciones con sus aplicaciones web en múltiples navegadores.
+Playwright Integration: Leverage the full potential of Playwright to automate interactions with your web applications across multiple browsers.
 
-Soporte de Cucumber: Escriba escenarios de prueba expresivos y fáciles de entender utilizando la sintaxis Gherkin, facilitando la colaboración entre miembros técnicos y no técnicos del equipo.
+Cucumber Support: Write expressive and easy-to-understand test scenarios using the Gherkin syntax, facilitating collaboration between technical and non-technical team members.
 
-Potenciado por TypeScript: Utilice los beneficios de TypeScript para un código robusto y mantenible, incluyendo tipado estático .
-
-![Project Infinit (2)](https://github.com/armadaautomationteam/Project-Infinite/assets/149462281/bbabdb6a-6fe0-4cd4-b59d-b76ce4abba07)
+Powered by TypeScript: Utilize the benefits of TypeScript for robust and maintainable code, including static typing.
 
 
-# Requsitos 📝 
+# Requeriments 📝 
 
-- Node.js: Asegúrese de tener Node.js instalado en su sistema. Puede descargarlo desde https://nodejs.org/en/download.
-- Editor de Texto: Se requiere un editor de texto de peferencia.
+Node.js: Ensure that Node.js is installed on your system. You can download it from https://nodejs.org/en/download.
 
-# Windows
+Text Editor: A text editor of your choice is required. Visual Studio Code (VSCode) is recommended.
 
-Descargar Node.js:
+# Installation  🖥️
 
-- Visita https://nodejs.org/en/download .
-- Descarga la version recomendada para windows .
-
-Instalar Node.js:
-
-- Ejecuta el instalador .
-- Siga las instrucciones de instalación, aceptando la configuración predeterminada.
-- Node.js y npm se instalarán automáticamente.
-Verificar la Instalación:
-- Abra el Símbolo del Sistema (CMD) o PowerShell.
-```bash
-node -v  # y presione Enter. Debería ver la versión de Node.js instalada.
-npm -v   # y presione Enter. Debería ver la versión de npm instalada.
-```
-# Linux
-Usando el Gestor de Paquetes (apt o yum):
-
-Abra Terminal.
-Actualice las listas de paquetes:
-``` sudo apt update ``` ( Debian/Ubuntu) o ``` sudo yum update ``` ( Red Hat/Fedora).
-Instalar Node.js y npm: ``` sudo apt install nodejs npm ``` ( Debian/Ubuntu) or ``` sudo yum install nodejs npm ``` ( Red Hat/Fedora).
-Usando Node Version Manager (nvm):
-
-Abrir Terminal.
-
-Instale nvm: 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-```
-Cierre y vuelva a abrir Terminal para comenzar a usar nvm.
-Instale Node.js y npm usando nvm:
-```bash
-nvm install node
-```
-Verificar Instalacion:
-
-Abrir Terminal.
-```bash
-node -v  # y presione Enter. Debería ver la versión de Node.js instalada.
-npm -v   # y presione Enter. Debería ver la versión de npm instalada.
-```
-# Instalacion  🖥️
-
-Clonar este repositorio:
+Clone this repository:
 
 ```bash
 git clone https://github.com/tu-usuario/project-infinite.git
 ```
- Navegar hasta la carpeta del proyecto:
+Navigate to the project folder:
 
 ```bash
  cd project-infinite
 ```
-Instalar dependencias:
-
+Install dependencies:
 ```bash
 npm install
 ```
-### Ayuda
+### Help
 
-**Métodos Principales de Playwright**
+**Main Methods of Playwright**
 
 
-| Método                                       | Descripción                                                                                                      |
+# Main Methods of Playwright
+
+| Method                                       | Description                                                                                                      |
 |----------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| async page.goto(url[, options])              | Navega hacia la URL especificada.                                                                                 |
-| async page.click(selector[, options])         | Hace clic en un elemento que coincida con el selector dado.                                                        |
-| async page.fill(selector, value[, options])   | Rellena un campo de entrada con el valor especificado.                                                             |
-| async page.waitForSelector(selector[, options]) | Espera hasta que aparezca un selector en la página.                                                              |
-| async page.screenshot([options])             | Toma una captura de pantalla de la página.                                                                        |
-| async page.evaluate(pageFunction[, ...args])  | Ejecuta una función JavaScript en el contexto de la página y retorna el resultado.                                 |
-| async page.waitForNavigation([options])       | Espera a que la navegación de la página termine.                                                                  |
-| async page.goBack([options])                 | Navega hacia atrás en la historia de la página.                                                                   |
-| async page.goForward([options])              | Navega hacia adelante en la historia de la página.                                                                |
-| async page.reload([options])                 | Recarga la página actual.                                                                                         |
-| async page.waitForTimeout(timeout)           | Espera la cantidad de tiempo especificada en milisegundos.                                                         |
-| async page.keyboard.press(key[, options])    | Simula la presión de una tecla en el teclado.                                                                     |
-| async page.waitForFunction(pageFunction[, options[, ...args]]) | Espera a que una función JavaScript en la página devuelva un valor verdadero.                                  |
-| async page.hover(selector[, options])         | Mueve el mouse sobre un elemento que coincida con el selector dado.                                               |
-| async page.focus(selector)                   | Da foco a un elemento que coincida con el selector dado.                                                           |
-| async page.dblclick(selector[, options])     | Hace doble clic en un elemento que coincida con el selector dado.                                                  |
-| async page.selectOption(selector, values[, options]) | Selecciona opciones en un elemento `<select>` que coincidan con los valores dados.                               |
-| async page.waitForRequest(urlOrPredicate[, options]) | Espera hasta que se realice una solicitud que coincida con la URL o predicado especificado.                      |
-| async page.waitForResponse(urlOrPredicate[, options]) | Espera hasta que se reciba una respuesta que coincida con la URL o predicado especificado.                        |
-| async page.addScriptTag(options)             | Añade una etiqueta `<script>` a la página.                                                                        |
-| async page.addStyleTag(options)              | Añade una etiqueta `<style>` a la página.                                                                         |
-| async page.setContent(html[, options])       | Establece el contenido HTML de la página.                                                                         |
-| async page.evaluateHandle(pageFunction[, ...args]) | Ejecuta una función JavaScript en el contexto de la página y devuelve un objeto manipulable en el navegador.   |
-| async page.waitForFileUpload(selector[, options]) | Espera hasta que se complete una carga de archivo en un elemento de entrada de archivo.                          |
-| async page.waitForEvent(event[, predicateOrTimeout[, options]]) | Espera hasta que se emita un evento específico en la página.                                                   |
+| `async page.goto(url[, options])`              | Navigates to the specified URL.                                                                                 |
+| `async page.click(selector[, options])`         | Clicks on an element that matches the given selector.                                                          |
+| `async page.fill(selector, value[, options])`   | Fills an input field with the specified value.                                                                  |
+| `async page.waitForSelector(selector[, options])` | Waits until an element matching the selector appears on the page.                                              |
+| `async page.screenshot([options])`             | Takes a screenshot of the page.                                                                                |
+| `async page.evaluate(pageFunction[, ...args])`  | Executes a JavaScript function in the page context and returns the result.                                      |
+| `async page.waitForNavigation([options])`       | Waits for the page navigation to complete.                                                                      |
+| `async page.goBack([options])`                 | Navigates backward in the page history.                                                                         |
+| `async page.goForward([options])`              | Navigates forward in the page history.                                                                          |
+| `async page.reload([options])`                 | Reloads the current page.                                                                                       |
+| `async page.waitForTimeout(timeout)`           | Waits for the specified amount of time in milliseconds.                                                         |
+| `async page.keyboard.press(key[, options])`    | Simulates pressing a key on the keyboard.                                                                       |
+| `async page.waitForFunction(pageFunction[, options[, ...args]])` | Waits until a JavaScript function on the page returns a truthy value.                                  |
+| `async page.hover(selector[, options])`         | Moves the mouse over an element that matches the given selector.                                                 |
+| `async page.focus(selector)`                   | Focuses on an element that matches the given selector.                                                          |
+| `async page.dblclick(selector[, options])`     | Double-clicks on an element that matches the given selector.                                                     |
+| `async page.selectOption(selector, values[, options])` | Selects options in a `<select>` element that match the given values.                                      |
+| `async page.waitForRequest(urlOrPredicate[, options])` | Waits until a request matching the specified URL or predicate is made.                                       |
+| `async page.waitForResponse(urlOrPredicate[, options])` | Waits until a response matching the specified URL or predicate is received.                                |
+| `async page.addScriptTag(options)`             | Adds a `<script>` tag to the page.                                                                              |
+| `async page.addStyleTag(options)`              | Adds a `<style>` tag to the page.                                                                               |
+| `async page.setContent(html[, options])`       | Sets the HTML content of the page.                                                                             |
+| `async page.evaluateHandle(pageFunction[, ...args])` | Executes a JavaScript function in the page context and returns a handle to an object that can be used in the browser. |
+| `async page.waitForFileUpload(selector[, options])` | Waits until a file upload is completed on a file input element.                                                |
+| `async page.waitForEvent(event[, predicateOrTimeout[, options]])` | Waits until a specific event is emitted on the page.                                                          |
 
-# Reportes 📄 
-Project-Infinite implementa "multiple-cucumber-html-reporter"
-para generar  informes en formato HTML.
+# Reports 📄 
+**Playwright-TS-Cucumber-Web** implements `multiple-cucumber-html-reporter` to generate reports in HTML format.
 
 Dashboard construido por  (https://github.com/WasiqB/multiple-cucumber-html-reporter)
 
@@ -124,7 +78,7 @@ Dashboard construido por  (https://github.com/WasiqB/multiple-cucumber-html-repo
 ![image](https://github.com/armadaautomationteam/Project-Infinite/assets/149462281/5ce3bc7f-446a-41c4-be8b-a885cf9edf5f)
 
 
-# Diseño de Pruebas ⌨️
+# Features Design ⌨️
 
 Features:
 
@@ -212,7 +166,7 @@ When('Presiona el boton {string}', async function (string) {
 });
 
 ```
-Correr Pruebas :
+Run Test :
 
 ```bash
 npm run test
