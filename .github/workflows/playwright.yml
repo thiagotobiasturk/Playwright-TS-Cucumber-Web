@@ -29,19 +29,39 @@ on:
           - 'yes'
           - 'no'
       parallel_test_count:
-        description: 'How many times do you want to run the tests in parallel? (1-100)'
+        description: 'How many times do you want to run the tests in parallel? (1-20)'
         required: false
-        default: '1'
-        type: string
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+          - '6'
+          - '7'
+          - '8'
+          - '9'
+          - '10'
+          - '11'
+          - '12'
+          - '13'
+          - '14'
+          - '15'
+          - '16'
+          - '17'
+          - '18'
+          - '19'
+          - '20'
 
 jobs:
   test:
+    if: ${{ github.event.inputs.run_parallel_tests == 'no' || github.event.inputs.parallel_test_count }}
     timeout-minutes: 60
     runs-on: ${{ github.event.inputs.os }}
     strategy:
       matrix:
-        parallel_run: ${{ fromJSON(github.event.inputs.parallel_test_count) }} # Convert the input to a number
-    if: ${{ github.event.inputs.run_parallel_tests == 'yes' }}
+        parallel_run: ${{ fromJSON(github.event.inputs.parallel_test_count) | range(0, min(20, fromJSON(github.event.inputs.parallel_test_count))) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
