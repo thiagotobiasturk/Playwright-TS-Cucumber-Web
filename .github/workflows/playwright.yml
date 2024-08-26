@@ -41,13 +41,8 @@ on:
 
 jobs:
   test:
-    if: ${{ github.event.inputs.run_parallel_tests == 'no' || github.event.inputs.parallel_test_count }}
     timeout-minutes: 60
     runs-on: ${{ github.event.inputs.os }}
-    strategy:
-      matrix:
-        parallel_run: [1, 2, 3, 4, 5] # Matrix now uses numbers
-      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -59,7 +54,19 @@ jobs:
       
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      
+
+  run-tests-in-parallel:
+    needs: test
+    timeout-minutes: 60
+    runs-on: ${{ github.event.inputs.os }}
+    strategy:
+      matrix:
+        parallel_run: [1, 2, 3, 4, 5]
+      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
+      include:
+        - parallel_run: 1
+    if: ${{ github.event.inputs.run_parallel_tests == 'yes' && github.event.inputs.parallel_test_count }}
+    steps:
       - name: Run Playwright tests
         run: npm test
 
