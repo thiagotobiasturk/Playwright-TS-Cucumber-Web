@@ -29,9 +29,15 @@ on:
           - 'yes'
           - 'no'
       parallel_test_count:
-        description: 'How many times do you want to run the tests in parallel?'
+        description: 'How many times do you want to run the tests in parallel? (1-5)'
         required: false
-        type: number
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
 
 jobs:
   test:
@@ -40,9 +46,8 @@ jobs:
     runs-on: ${{ github.event.inputs.os }}
     strategy:
       matrix:
-        parallel_run: [1] # Default single run
-        include: |
-          ${{ github.event.inputs.parallel_test_count | range | join(",") }}
+        parallel_run: [1, 2, 3, 4, 5] # Matrix now uses numbers
+      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
