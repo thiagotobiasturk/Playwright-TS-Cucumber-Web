@@ -3,22 +3,23 @@
 ![Diseño sin título (3)](https://github.com/user-attachments/assets/cf2b2195-84f0-4225-8948-bf81e297938a)
 
 
-Playwright-TS-Cucumber-Web is an advanced and highly efficient test automation framework designed to revolutionize your testing process. Our framework is meticulously crafted to optimize the testing workflow, providing you with a seamless experience and powerful testing capabilities.
+- Playwright-TS-Cucumber-Web is an advanced and highly efficient test automation framework designed to revolutionize your testing process. Our framework is meticulously crafted to optimize the testing workflow, providing you with a seamless 
+ experience and powerful testing capabilities.
 
 Key Features:
 
-Playwright Integration: Leverage the full potential of Playwright to automate interactions with your web applications across multiple browsers.
+- Playwright Integration: Leverage the full potential of Playwright to automate interactions with your web applications across multiple browsers.
 
-Cucumber Support: Write expressive and easy-to-understand test scenarios using the Gherkin syntax, facilitating collaboration between technical and non-technical team members.
+- Cucumber Support: Write expressive and easy-to-understand test scenarios using the Gherkin syntax, facilitating collaboration between technical and non-technical team members.
 
-Powered by TypeScript: Utilize the benefits of TypeScript for robust and maintainable code, including static typing.
+- Powered by TypeScript: Utilize the benefits of TypeScript for robust and maintainable code, including static typing.
 
 
 # Requeriments 📝 
 
-Node.js: Ensure that Node.js is installed on your system. You can download it from https://nodejs.org/en/download.
+- Node.js: Ensure that Node.js is installed on your system. You can download it from https://nodejs.org/en/download.
 
-Text Editor: A text editor of your choice is required. Visual Studio Code (VSCode) is recommended.
+- Text Editor: A text editor of your choice is required. Visual Studio Code (VSCode) is recommended.
 
 # Installation  🖥️
 
