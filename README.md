@@ -26,23 +26,20 @@ Key Features:
 Clone this repository:
 
 ```bash
-git clone https://github.com/tu-usuario/project-infinite.git
+git clone https://github.com/thiagotobiasturk/Playwright-TS-Cucumber-Web.git
 ```
 Navigate to the project folder:
 
 ```bash
- cd project-infinite
+ cd Playwright-TS-Cucumber-Web
 ```
 Install dependencies:
 ```bash
 npm install
 ```
-### Help
+# Help
 
-**Main Methods of Playwright**
-
-
-# Main Methods of Playwright
+### Main Methods of Playwright
 
 | Method                                       | Description                                                                                                      |
 |----------------------------------------------|------------------------------------------------------------------------------------------------------------------|
