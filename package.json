@@ -4,7 +4,7 @@
   "description": "This is a repository made up of Playwright-TS-Po-Web",
   "main": "index.js",
   "scripts": {
-    "pretest": " npx tsc printFile.ts &  node ./printFile.js",
+    "pretest": "node ./printFile.js",
     "test": "cucumber-js test || true",
     "posttest": "npx ts-node src/helper/reports.ts"
   },
