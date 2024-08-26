@@ -61,7 +61,8 @@ jobs:
     runs-on: ${{ github.event.inputs.os }}
     strategy:
       matrix:
-        parallel_run: ${{ fromJSON(github.event.inputs.parallel_test_count) | range(0, min(20, fromJSON(github.event.inputs.parallel_test_count))) }}
+        parallel_run: [0] # Placeholder matrix item
+      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
