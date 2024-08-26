@@ -80,7 +80,7 @@ npm install
 ![image](https://github.com/user-attachments/assets/2ea645fd-0fb0-4d0d-89d2-163519e9b8be)
 
 
-# Features Design ⌨️
+# Features Design ✏️
 
 Features:
 
@@ -107,7 +107,7 @@ Feature: Login Functionality
 
 ```
 
-Steps:
+# Steps ⌨️ 
 
 ```typescript
 
