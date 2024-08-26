@@ -53,9 +53,9 @@ jobs:
       - name: Run Playwright tests
         run: |
           if [ "${{ github.event.inputs.run_parallel_tests }}" == "yes" ]; then
-            npx playwright test --workers=${{ github.event.inputs.parallel_test_count }}
+            npm test -- --maxWorkers=${{ github.event.inputs.parallel_test_count }}
           else
-            npx playwright test
+            npm test
           fi
       
       - name: Upload test report
