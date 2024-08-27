@@ -11,13 +11,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Actualiza a la última versión
 
       - name: Install dependencies
         run: npm install
 
       - name: Cache Playwright Chromium
-        uses: actions/cache@v3
+        uses: actions/cache@v4  # Actualiza a la última versión
         with:
           path: ~/.cache/ms-playwright/chromium
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
@@ -25,7 +25,7 @@ jobs:
             ${{ runner.os }}-playwright-chromium
 
       - name: Cache Playwright Firefox
-        uses: actions/cache@v3
+        uses: actions/cache@v4  # Actualiza a la última versión
         with:
           path: ~/.cache/ms-playwright/firefox
           key: ${{ runner.os }}-playwright-firefox-${{ hashFiles('package-lock.json') }}
@@ -46,16 +46,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Actualiza a la última versión
 
       - name: Restore Playwright Chromium cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4  # Actualiza a la última versión
         with:
           path: ~/.cache/ms-playwright/chromium
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
 
       - name: Restore Playwright Firefox cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4  # Actualiza a la última versión
         with:
           path: ~/.cache/ms-playwright/firefox
           key: ${{ runner.os }}-playwright-firefox-${{ hashFiles('package-lock.json') }}
