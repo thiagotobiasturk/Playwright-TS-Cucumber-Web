@@ -23,14 +23,13 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context } = require('@actions/github');
             const { owner, repo } = context.repo;
             const workflow_id = 'tests.yml';
             const ref = context.ref;
             const inputs = {
               create_report: 'yes'
             };
-            
+
             await github.actions.createWorkflowDispatch({
               owner,
               repo,
