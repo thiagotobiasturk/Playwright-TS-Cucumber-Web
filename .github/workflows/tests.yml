@@ -1,0 +1,38 @@
+name: Run Playwright Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_report:
+        description: 'Generate and upload report'
+        required: false
+        default: 'no'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        parallel_run: [1, 2, 3, 4] # Puedes ajustar la cantidad de paralelismo según tus necesidades
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Playwright tests
+        run: |
+          npm test
+          npm run postest
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: ${{ github.event.inputs.create_report == 'yes' }}
+        with:
+          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+          path: |
+            assets/
+            features/
+            index.html
