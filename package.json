@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "node ./printFile.js",
     "test": "cucumber-js test",
-    "report": "npx ts-node src/helper/reports.ts"
+    "postest": "npx ts-node src/helper/reports.ts"
   },
   "keywords": [],
   "author": "Automation Armada",
