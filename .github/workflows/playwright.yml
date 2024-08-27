@@ -60,7 +60,12 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ github.event.inputs.create_report == 'yes' }}
         with:
-          name: playwright-report-${{ runner.os }}-${{ matrix.parallel
+          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+          path: |
+            assets/
+            features/
+            index.html
+
 # name: CI/CD
 
 # on:
