@@ -1,17 +1,62 @@
-name: CI Pipeline
+name: CI/CD
 
 on:
   push:
     branches:
-      - develop
+      - ${{ github.event.inputs.branch || 'develop' }}
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Operating System for the runner (ubuntu-latest, windows-latest, macos-latest)'
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+      create_report:
+        description: 'Create a test report?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
+      auto_run:
+        description: 'Automatically run the pipeline?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
+      frequency:
+        description: 'Frequency for automatic execution (daily, weekly, monthly)'
+        required: false
+        default: 'daily'
+        type: choice
+        options:
+          - daily
+          - weekly
+          - monthly
+      branch:
+        description: 'Branch to trigger the workflow'
+        required: true
+        default: 'develop'
+        type: string
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.os }}
+    outputs:
+      parallel_runs: ${{ steps.set-env.outputs.parallel_runs }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       - name: Install dependencies
         run: npm install
@@ -29,16 +74,23 @@ jobs:
         if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
         run: npx playwright install chromium
 
+      - name: Set Parallel Runs Environment Variable
+        id: set-env
+        run: echo "PARALLEL_RUNS=${{ github.event.inputs.parallel_runs }}" >> $GITHUB_ENV
+
   tests:
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.os }}
+    if: ${{ github.event.inputs.auto_run == 'yes' }}
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4] # Ajusta según sea necesario
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
       - name: Restore Playwright Chromium cache
         uses: actions/cache@v3
@@ -51,7 +103,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          npx playwright test
+          npm test
           npm run postest
 
       - name: Upload test report
@@ -64,108 +116,24 @@ jobs:
             features/
             index.html
 
+# Job for scheduling the workflow if auto_run is 'yes'
+scheduling:
+  if: ${{ github.event.inputs.auto_run == 'yes' }}
+  runs-on: ubuntu-latest
+  schedule:
+    - cron: '0 0 * * *' # Daily
+    - cron: '0 0 * * 0' # Weekly
+    - cron: '0 0 1 * *' # Monthly
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
-# name: CI/CD
+    - name: Notify Scheduled Run
+      run: echo "This pipeline is running according to the schedule: ${{ github.event.inputs.frequency }}"
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       os:
-#         description: 'Choose the OS for the workflow'
-#         required: true
-#         default: 'ubuntu-latest'
-#         type: choice
-#         options:
-#           - 'ubuntu-latest'
-#           - 'windows-latest'
-#           - 'macOS-latest'
-#       create_report:
-#         description: 'Do you want to create and upload the test report?'
-#         required: true
-#         default: 'no'
-#         type: choice
-#         options:
-#           - 'yes'
-#           - 'no'
-#       run_parallel_tests:
-#         description: 'Do you want to run tests in parallel?'
-#         required: true
-#         default: 'no'
-#         type: choice
-#         options:
-#           - 'yes'
-#           - 'no'
-#       parallel_test_count:
-#         description: 'How many times do you want to run the tests in parallel? (1-20)'
-#         required: false
-#         type: choice
-#         options:
-#           - '1'
-#           - '2'
-#           - '3'
-#           - '4'
-#           - '5'
-#           - '6'
-#           - '7'
-#           - '8' 
-#           - '9'
-#           - '10'
-#           - '11'
-#           - '12'
-#           - '13'
-#           - '14'
-#           - '15'
-#           - '16'
-#           - '17'
-#           - '18'
-#           - '19'
-#           - '20'
-        
-# jobs:
-#   test:
-#     timeout-minutes: 60
-#     runs-on: ${{ github.event.inputs.os }}
-#     strategy:
-#       matrix:
-#         parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] 
-#       max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
-#     steps:
-
-#       - name: Cache npm dependencies
-#         uses: actions/cache@v4
-#         with:
-#           path: |
-#             ~/.npm
-#             ~/.cache
-#           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-npm-
-            
-#       - uses: actions/checkout@v4
-#       - uses: actions/setup-node@v4
-#         with:
-#           node-version: lts/*
-      
-#       - name: Install dependencies
-#         run: npm ci
-      
-#       - name: Install Playwright browsers (Chromium and Firefox)
-#         run: |
-#           npx playwright install chromium
-#           npx playwright install firefox
-
-      
-#       - name: Run Playwright tests
-#         run: |
-#             npm test
-#             npm run postest
-
-#       - name: Upload test report
-#         uses: actions/upload-artifact@v4
-#         if: ${{ github.event.inputs.create_report == 'yes' }}
-#         with:
-#           name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
-#           path: |
-#                assets/
-#                features/
-#                index.html
+    - name: Run tests
+      run: |
+        echo "Running scheduled tests..."
+        npm test
