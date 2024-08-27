@@ -37,8 +37,12 @@ on:
         options:
           - daily
           - weekly
-          - monthly'
-
+          - monthly
+      parallel_runs:
+        description: 'Number of parallel runs'
+        required: true
+        default: 1
+        type: number
 
 jobs:
   setup:
@@ -70,7 +74,7 @@ jobs:
     if: ${{ github.event.inputs.auto_run == 'yes' }}
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] # Asumiendo que se debe usar esta matriz
 
     steps:
       - name: Checkout repository
