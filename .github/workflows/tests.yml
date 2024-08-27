@@ -4,10 +4,48 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Operating System for the runner (ubuntu-latest, windows-latest, macos-latest)'
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+      create_report:
+        description: 'Create a test report?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
+      auto_run:
+        description: 'Automatically run the pipeline?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
+      frequency:
+        description: 'Frequency for automatic execution (daily, weekly, monthly)'
+        required: false
+        default: 'daily'
+        type: choice
+        options:
+          - daily
+          - weekly
+          - monthly
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.os }}
+    outputs:
+      parallel_runs: ${{ steps.set-env.outputs.parallel_runs }}
 
     steps:
       - name: Checkout repository
@@ -29,12 +67,17 @@ jobs:
         if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
         run: npx playwright install chromium
 
+      - name: Set Parallel Runs Environment Variable
+        id: set-env
+        run: echo "PARALLEL_RUNS=${{ github.event.inputs.parallel_runs }}" >> $GITHUB_ENV
+
   tests:
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.os }}
+    if: ${{ github.event.inputs.auto_run == 'yes' }}
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] 
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
     steps:
       - name: Checkout repository
@@ -63,3 +106,23 @@ jobs:
             assets/
             features/
             index.html
+
+# Job for scheduling the workflow if auto_run is 'yes'
+scheduling:
+  if: ${{ github.event.inputs.auto_run == 'yes' }}
+  runs-on: ubuntu-latest
+  schedule:
+    - cron: '0 0 * * *' # Adjust according to frequency input
+    - cron: '0 0 * * 0' # Weekly
+    - cron: '0 0 1 * *' # Monthly
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Notify Scheduled Run
+      run: echo "This pipeline is running according to the schedule: ${{ github.event.inputs.frequency }}"
+
+    - name: Run tests
+      run: |
+        echo "Running scheduled tests..."
+        npm test
