@@ -1,183 +1,58 @@
-# name: CI Pipeline
-
-# on:
-#   push:
-#     branches:
-#       - develop
-
-# jobs:
-#   setup:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       - name: Install dependencies
-#         run: npm install
-
-#       - name: Cache Playwright Chromium
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.cache/ms-playwright/chromium
-#           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-playwright-chromium
-
-#       - name: Cache Playwright Firefox
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.cache/ms-playwright/firefox
-#           key: ${{ runner.os }}-playwright-firefox-${{ hashFiles('package-lock.json') }}
-#           restore-keys: |
-#             ${{ runner.os }}-playwright-firefox
-
-#       - name: Install Playwright browsers (Chromium and Firefox)
-#         run: |
-#           npx playwright install chromium
-#           npx playwright install firefox
-
-#   tests:
-#     needs: setup
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         parallel_run: [1, 2, 3, 4]
-
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       - name: Restore Playwright Chromium cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.cache/ms-playwright/chromium
-#           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
-
-#       - name: Restore Playwright Firefox cache
-#         uses: actions/cache@v4
-#         with:
-#           path: ~/.cache/ms-playwright/firefox
-#           key: ${{ runner.os }}-playwright-firefox-${{ hashFiles('package-lock.json') }}
-
-#       - name: Install dependencies
-#         run: npm install
-
-#       - name: Verify Playwright browsers installation
-#         run: |
-#           ls -la ~/.cache/ms-playwright/chromium
-#           ls -la ~/.cache/ms-playwright/firefox
-
-#       - name: Run Playwright tests
-#         run: |
-#           npm test
-#           npm run postest
-
-#       - name: Upload test report
-#         uses: actions/upload-artifact@v4
-#         if: ${{ github.event.inputs.create_report == 'yes' }}
-#         with:
-#           name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
-#           path: |
-#             assets/
-#             features/
-#             index.html
-
-
-name: CI/CD
+name: CI Pipeline
 
 on:
-  workflow_dispatch:
-    inputs:
-      os:
-        description: 'Choose the OS for the workflow'
-        required: true
-        default: 'ubuntu-latest'
-        type: choice
-        options:
-          - 'ubuntu-latest'
-          - 'windows-latest'
-          - 'macOS-latest'
-      create_report:
-        description: 'Do you want to create and upload the test report?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
-      run_parallel_tests:
-        description: 'Do you want to run tests in parallel?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
-      parallel_test_count:
-        description: 'How many times do you want to run the tests in parallel? (1-20)'
-        required: false
-        type: choice
-        options:
-          - '1'
-          - '2'
-          - '3'
-          - '4'
-          - '5'
-          - '6'
-          - '7'
-          - '8' 
-          - '9'
-          - '10'
-          - '11'
-          - '12'
-          - '13'
-          - '14'
-          - '15'
-          - '16'
-          - '17'
-          - '18'
-          - '19'
-          - '20'
-        
+  push:
+    branches:
+      - develop
+
 jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ${{ github.event.inputs.os }}
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v3
+        id: cache-playwright-chromium
+        with:
+          path: ~/.cache/ms-playwright/chromium
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-chromium-
+
+      - name: Install Playwright Chromium
+        if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
+
+  tests:
+    needs: setup
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] 
-      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
+        parallel_run: [1, 2, 3, 4] # Ajusta según sea necesario
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
+      - name: Restore Playwright Chromium cache
+        uses: actions/cache@v3
         with:
-          path: |
-            ~/.npm
-            ~/.cache
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-            
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      
+          path: ~/.cache/ms-playwright/chromium
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
-        run: npm ci
-      
-      - name: Install Playwright browsers (Chromium and Firefox)
-        run: |
-          npx playwright install chromium
-          npx playwright install firefox
+        run: npm install
 
-      
       - name: Run Playwright tests
         run: |
-            npm test
-            npm run postest
+          npm test
+          npm run postest
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
@@ -185,6 +60,112 @@ jobs:
         with:
           name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
           path: |
-               assets/
-               features/
-               index.html
+            assets/
+            features/
+            index.html
+
+
+# name: CI/CD
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       os:
+#         description: 'Choose the OS for the workflow'
+#         required: true
+#         default: 'ubuntu-latest'
+#         type: choice
+#         options:
+#           - 'ubuntu-latest'
+#           - 'windows-latest'
+#           - 'macOS-latest'
+#       create_report:
+#         description: 'Do you want to create and upload the test report?'
+#         required: true
+#         default: 'no'
+#         type: choice
+#         options:
+#           - 'yes'
+#           - 'no'
+#       run_parallel_tests:
+#         description: 'Do you want to run tests in parallel?'
+#         required: true
+#         default: 'no'
+#         type: choice
+#         options:
+#           - 'yes'
+#           - 'no'
+#       parallel_test_count:
+#         description: 'How many times do you want to run the tests in parallel? (1-20)'
+#         required: false
+#         type: choice
+#         options:
+#           - '1'
+#           - '2'
+#           - '3'
+#           - '4'
+#           - '5'
+#           - '6'
+#           - '7'
+#           - '8' 
+#           - '9'
+#           - '10'
+#           - '11'
+#           - '12'
+#           - '13'
+#           - '14'
+#           - '15'
+#           - '16'
+#           - '17'
+#           - '18'
+#           - '19'
+#           - '20'
+        
+# jobs:
+#   test:
+#     timeout-minutes: 60
+#     runs-on: ${{ github.event.inputs.os }}
+#     strategy:
+#       matrix:
+#         parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] 
+#       max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
+#     steps:
+
+#       - name: Cache npm dependencies
+#         uses: actions/cache@v4
+#         with:
+#           path: |
+#             ~/.npm
+#             ~/.cache
+#           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-npm-
+            
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: lts/*
+      
+#       - name: Install dependencies
+#         run: npm ci
+      
+#       - name: Install Playwright browsers (Chromium and Firefox)
+#         run: |
+#           npx playwright install chromium
+#           npx playwright install firefox
+
+      
+#       - name: Run Playwright tests
+#         run: |
+#             npm test
+#             npm run postest
+
+#       - name: Upload test report
+#         uses: actions/upload-artifact@v4
+#         if: ${{ github.event.inputs.create_report == 'yes' }}
+#         with:
+#           name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+#           path: |
+#                assets/
+#                features/
+#                index.html
