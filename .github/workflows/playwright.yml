@@ -1,130 +1,171 @@
-name: CI/CD
+name: Setup Environment
 
 on:
-  workflow_dispatch:
-    inputs:
-      os:
-        description: 'Choose the OS for the workflow'
-        required: true
-        default: 'ubuntu-latest'
-        type: choice
-        options:
-          - 'ubuntu-latest'
-          - 'windows-latest'
-          - 'macOS-latest'
-      create_report:
-        description: 'Do you want to create and upload the test report?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
-      run_parallel_tests:
-        description: 'Do you want to run tests in parallel?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
-      parallel_test_count:
-        description: 'How many times do you want to run the tests in parallel? (1-50)'
-        required: false
-        type: choice
-        options:
-          - '1'
-          - '2'
-          - '3'
-          - '4'
-          - '5'
-          - '6'
-          - '7'
-          - '8' 
-          - '9'
-          - '10'
-          - '11'
-          - '12'
-          - '13'
-          - '14'
-          - '15'
-          - '16'
-          - '17'
-          - '18'
-          - '19'
-          - '20'
-          - '21'
-          - '22'
-          - '23'
-          - '24'
-          - '25'
-          - '26'
-          - '27'
-          - '28'
-          - '29'
-          - '30'
-          - '31'
-          - '32'
-          - '33'
-          - '34'
-          - '35'
-          - '36'
-          - '37'
-          - '38'
-          - '39'
-          - '40'
-          - '41'
-          - '42'
-          - '43'
-          - '44'
-          - '45'
-          - '46'
-          - '47'
-          - '48'
-          - '49'
-          - '50'
-jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ${{ github.event.inputs.os }}
-    strategy:
-      matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 41, 42, 43, 44, 45, 46, 47, 47, 48, 49, 50] 
-      max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
-    steps:
+  push:
+    branches:
+      - develop
 
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            ~/.cache
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-            
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Install dependencies
-        run: npm ci
-      
-      - name: Install Playwright Browsers
+        run: npm install
+
+      - name: Install Playwright browsers with dependencies
         run: npx playwright install --with-deps
       
-      - name: Run Playwright tests
-        run: |
-            npm test
-            npm run postest
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        if: ${{ github.event.inputs.create_report == 'yes' }}
+      - name: Trigger Tests Workflow
+        uses: actions/github-script@v6
         with:
-          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
-          path: |
-               assets/
-               features/
-               index.html
+          script: |
+            const { context } = require('@actions/github');
+            const { owner, repo } = context.repo;
+            const workflow_id = 'tests.yml';
+            const ref = context.ref;
+            const inputs = {
+              create_report: 'yes'
+            };
+            
+            await github.actions.createWorkflowDispatch({
+              owner,
+              repo,
+              workflow_id,
+              ref,
+              inputs,
+            });
+
+# name: CI/CD
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       os:
+#         description: 'Choose the OS for the workflow'
+#         required: true
+#         default: 'ubuntu-latest'
+#         type: choice
+#         options:
+#           - 'ubuntu-latest'
+#           - 'windows-latest'
+#           - 'macOS-latest'
+#       create_report:
+#         description: 'Do you want to create and upload the test report?'
+#         required: true
+#         default: 'no'
+#         type: choice
+#         options:
+#           - 'yes'
+#           - 'no'
+#       run_parallel_tests:
+#         description: 'Do you want to run tests in parallel?'
+#         required: true
+#         default: 'no'
+#         type: choice
+#         options:
+#           - 'yes'
+#           - 'no'
+#       parallel_test_count:
+#         description: 'How many times do you want to run the tests in parallel? (1-50)'
+#         required: false
+#         type: choice
+#         options:
+#           - '1'
+#           - '2'
+#           - '3'
+#           - '4'
+#           - '5'
+#           - '6'
+#           - '7'
+#           - '8' 
+#           - '9'
+#           - '10'
+#           - '11'
+#           - '12'
+#           - '13'
+#           - '14'
+#           - '15'
+#           - '16'
+#           - '17'
+#           - '18'
+#           - '19'
+#           - '20'
+#           - '21'
+#           - '22'
+#           - '23'
+#           - '24'
+#           - '25'
+#           - '26'
+#           - '27'
+#           - '28'
+#           - '29'
+#           - '30'
+#           - '31'
+#           - '32'
+#           - '33'
+#           - '34'
+#           - '35'
+#           - '36'
+#           - '37'
+#           - '38'
+#           - '39'
+#           - '40'
+#           - '41'
+#           - '42'
+#           - '43'
+#           - '44'
+#           - '45'
+#           - '46'
+#           - '47'
+#           - '48'
+#           - '49'
+#           - '50'
+# jobs:
+#   test:
+#     timeout-minutes: 60
+#     runs-on: ${{ github.event.inputs.os }}
+#     strategy:
+#       matrix:
+#         parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 41, 42, 43, 44, 45, 46, 47, 47, 48, 49, 50] 
+#       max-parallel: ${{ fromJSON(github.event.inputs.parallel_test_count) }}
+#     steps:
+
+#       - name: Cache npm dependencies
+#         uses: actions/cache@v4
+#         with:
+#           path: |
+#             ~/.npm
+#             ~/.cache
+#           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-npm-
+            
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: lts/*
+      
+#       - name: Install dependencies
+#         run: npm ci
+      
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps
+      
+#       - name: Run Playwright tests
+#         run: |
+#             npm test
+#             npm run postest
+
+#       - name: Upload test report
+#         uses: actions/upload-artifact@v4
+#         if: ${{ github.event.inputs.create_report == 'yes' }}
+#         with:
+#           name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+#           path: |
+#                assets/
+#                features/
+#                index.html
