@@ -55,7 +55,6 @@ on:
           - '20'
 jobs:
   test:
-    if: ${{ github.event.inputs.run_parallel_tests == 'no' || github.event.inputs.parallel_test_count }}
     timeout-minutes: 60
     runs-on: ${{ github.event.inputs.os }}
     strategy:
@@ -94,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ github.event.inputs.create_report == 'yes' }}
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.parallel_run }}
           path: |
                assets/
                features/
