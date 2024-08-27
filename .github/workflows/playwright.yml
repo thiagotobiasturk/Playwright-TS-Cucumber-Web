@@ -21,13 +21,15 @@ jobs:
         id: cache-playwright
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-browsers
+          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-playwright-browsers
+            ${{ runner.os }}-playwright-browsers-
 
-      - name: Install Playwright browsers with dependencies
+      - name: Install Playwright browsers (Firefox and Chromium)
         if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+        run: |
+          npx playwright install chromium
+          npx playwright install firefox
 
   tests:
     needs: setup
@@ -44,7 +46,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-browsers
+          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         run: npm install
@@ -58,11 +60,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ github.event.inputs.create_report == 'yes' }}
         with:
-          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
-          path: |
-            assets/
-            features/
-            index.html
+          name: playwright-report-${{ runner.os }}-${{ matrix.parallel
 
 
 
