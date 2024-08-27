@@ -1,23 +1,50 @@
-name: Run Playwright Tests
+name: CI Pipeline
 
 on:
-  workflow_dispatch:
-    inputs:
-      create_report:
-        description: 'Generate and upload report'
-        required: false
-        default: 'no'
+  push:
+    branches:
+      - develop
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        parallel_run: [1, 2, 3, 4] # Puedes ajustar la cantidad de paralelismo según tus necesidades
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v3
+        id: cache-playwright-chromium
+        with:
+          path: /home/runner/.cache/ms-playwright/chromium-1112
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-chromium-
+
+      - name: Install Playwright Chromium
+        if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
+
+  tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        parallel_run: [1, 2, 3, 4] # Ajusta según sea necesario
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Restore Playwright Chromium cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/.cache/ms-playwright/chromium-1112
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         run: npm install
