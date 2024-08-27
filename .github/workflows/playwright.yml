@@ -13,7 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
 
       - name: Install Playwright browsers with dependencies
@@ -24,11 +34,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4]  # Define el número de ejecuciones paralelas
+        parallel_run: [1, 2, 3, 4] # Ajusta según sea necesario
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Restore node modules cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Run Playwright tests
         run: |
@@ -44,6 +60,7 @@ jobs:
             assets/
             features/
             index.html
+
 
 
 # name: CI/CD
