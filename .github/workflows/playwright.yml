@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   setup:
@@ -16,7 +16,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        id: cache-playwright
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers
+          restore-keys: |
+            ${{ runner.os }}-playwright-browsers
+
       - name: Install Playwright browsers with dependencies
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
   tests:
@@ -29,6 +39,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Restore Playwright browsers cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers
 
       - name: Install dependencies
         run: npm install
@@ -47,6 +63,7 @@ jobs:
             assets/
             features/
             index.html
+
 
 
 
