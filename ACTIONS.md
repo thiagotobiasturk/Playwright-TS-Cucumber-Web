@@ -1,4 +1,4 @@
-# Continuous Integration and Continuous Delivery (CI/CD) with GitHub Actions
+# Continuous Integration (CI/CD) with GitHub Actions
 
 This project uses GitHub Actions for Continuous Integration (CI) and Continuous Delivery (CD). The workflow is defined through a YAML file that specifies how tests should be run and what actions to take during the process. Below is an overview of how this workflow is configured.
 
