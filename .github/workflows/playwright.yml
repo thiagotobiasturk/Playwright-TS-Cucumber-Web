@@ -49,8 +49,6 @@ on:
 jobs:
   setup:
     runs-on: ${{ github.event.inputs.os }}
-    outputs:
-      parallel_runs: ${{ steps.set-env.outputs.parallel_runs }}
 
     steps:
       - name: Checkout repository
@@ -73,10 +71,6 @@ jobs:
       - name: Install Playwright Chromium
         if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
         run: npx playwright install chromium
-
-      - name: Set Parallel Runs Environment Variable
-        id: set-env
-        run: echo "PARALLEL_RUNS=${{ github.event.inputs.parallel_runs }}" >> $GITHUB_ENV
 
   tests:
     needs: setup
@@ -115,25 +109,3 @@ jobs:
             assets/
             features/
             index.html
-
-# Job for scheduling the workflow if auto_run is 'yes'
-scheduling:
-  if: ${{ github.event.inputs.auto_run == 'yes' }}
-  runs-on: ubuntu-latest
-  schedule:
-    - cron: '0 0 * * *' # Daily
-    - cron: '0 0 * * 0' # Weekly
-    - cron: '0 0 1 * *' # Monthly
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.inputs.branch }}
-
-    - name: Notify Scheduled Run
-      run: echo "This pipeline is running according to the schedule: ${{ github.event.inputs.frequency }}"
-
-    - name: Run tests
-      run: |
-        echo "Running scheduled tests..."
-        npm test
