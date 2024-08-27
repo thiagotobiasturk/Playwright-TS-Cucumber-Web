@@ -2,7 +2,7 @@
 
 ![Diseño sin título (3)](https://github.com/user-attachments/assets/cf2b2195-84f0-4225-8948-bf81e297938a)
 
-
+[Actions-CI/CD](ACTIONS.md)
 Playwright-TS-Cucumber-Web is an advanced and highly efficient test automation framework designed to revolutionize your testing process. Our framework is meticulously crafted to optimize the testing workflow, providing you with a seamless 
 experience and powerful testing capabilities.
 
