@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4] # Ajusta según sea necesario
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] 
 
     steps:
       - name: Checkout repository
