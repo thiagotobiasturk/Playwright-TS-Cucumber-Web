@@ -61,11 +61,6 @@ jobs:
         if: ${{ github.event.inputs.create_report == 'yes' }}
         with:
           name: playwright-report-${{ runner.os }}-${{ matrix.parallel
-
-
-
-
-
 # name: CI/CD
 
 # on:
