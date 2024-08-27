@@ -1,4 +1,4 @@
-name: Setup Environment
+name: CI Pipeline
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -18,25 +18,33 @@ jobs:
 
       - name: Install Playwright browsers with dependencies
         run: npx playwright install --with-deps
-      
-      - name: Trigger Tests Workflow
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const workflow_id = 'tests.yml';
-            const ref = context.ref;
-            const inputs = {
-              create_report: 'yes'
-            };
 
-            await github.actions.createWorkflowDispatch({
-              owner,
-              repo,
-              workflow_id,
-              ref,
-              inputs,
-            });
+  tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        parallel_run: [1, 2, 3, 4]  # Define el número de ejecuciones paralelas
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Playwright tests
+        run: |
+          npm test
+          npm run postest
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: ${{ github.event.inputs.create_report == 'yes' }}
+        with:
+          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+          path: |
+            assets/
+            features/
+            index.html
+
 
 # name: CI/CD
 
