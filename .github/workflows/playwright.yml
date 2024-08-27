@@ -16,9 +16,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: List Playwright cache directory (debug)
-        run: ls -la /home/runner/.cache/ms-playwright/chromium-1112 || echo "No cache found"
-
       - name: Cache Playwright Chromium
         uses: actions/cache@v3
         id: cache-playwright-chromium
@@ -66,6 +63,7 @@ jobs:
             assets/
             features/
             index.html
+
 
 
 
