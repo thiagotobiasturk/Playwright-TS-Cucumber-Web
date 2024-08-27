@@ -2,8 +2,6 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - ${{ github.event.inputs.branch || 'develop' }}
   workflow_dispatch:
     inputs:
       os:
