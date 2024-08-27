@@ -16,17 +16,23 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Cache Playwright browsers
+      - name: Cache Playwright Chromium
         uses: actions/cache@v3
-        id: cache-playwright
         with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('package-lock.json') }}
+          path: ~/.cache/ms-playwright/chromium
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-playwright-browsers-
+            ${{ runner.os }}-playwright-chromium
 
-      - name: Install Playwright browsers (Firefox and Chromium)
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
+      - name: Cache Playwright Firefox
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright/firefox
+          key: ${{ runner.os }}-playwright-firefox-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-firefox
+
+      - name: Install Playwright browsers (Chromium and Firefox)
         run: |
           npx playwright install chromium
           npx playwright install firefox
@@ -42,11 +48,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Restore Playwright browsers cache
+      - name: Restore Playwright Chromium cache
         uses: actions/cache@v3
         with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('package-lock.json') }}
+          path: ~/.cache/ms-playwright/chromium
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+
+      - name: Restore Playwright Firefox cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright/firefox
+          key: ${{ runner.os }}-playwright-firefox-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         run: npm install
