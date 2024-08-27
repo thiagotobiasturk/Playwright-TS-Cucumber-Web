@@ -39,12 +39,8 @@ on:
         options:
           - daily
           - weekly
-          - monthly
-      branch:
-        description: 'Branch to trigger the workflow'
-        required: true
-        default: 'develop'
-        type: string
+          - monthly'
+
 
 jobs:
   setup:
@@ -53,8 +49,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
 
       - name: Install dependencies
         run: npm install
@@ -69,7 +63,7 @@ jobs:
             ${{ runner.os }}-playwright-chromium-
 
       - name: Install Playwright Chromium
-        if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
+        if: steps.cache-playwright-chromium.outputs.cache-hit != 'yes'
         run: npx playwright install chromium
 
   tests:
@@ -83,8 +77,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
 
       - name: Restore Playwright Chromium cache
         uses: actions/cache@v3
