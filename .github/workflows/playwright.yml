@@ -4,36 +4,10 @@ on:
   push:
     branches:
       - develop
-  workflow_dispatch:
-    inputs:
-      os:
-        description: 'Sistema operativo para ejecutar el flujo de trabajo'
-        required: true
-        default: 'ubuntu-latest'
-        type: choice
-        options:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-      create_report:
-        description: '¿Crear reporte y subir artifacts?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - yes
-          - no
-      parallel_runs:
-        description: 'Número de ejecuciones paralelas de pruebas (1-30)'
-        required: true
-        default: '1'
-        type: number
-        min: 1
-        max: 30
 
 jobs:
   setup:
-    runs-on: ${{ github.event.inputs.os }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -57,10 +31,11 @@ jobs:
 
   tests:
     needs: setup
-    runs-on: ${{ github.event.inputs.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] 
+        parallel_run: [1, 2, 3, 4] # Ajusta según sea necesario
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -76,7 +51,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          npm test
+          npx playwright test
           npm run postest
 
       - name: Upload test report
@@ -88,11 +63,6 @@ jobs:
             assets/
             features/
             index.html
-
-
-
-
-
 
 
 # name: CI/CD
