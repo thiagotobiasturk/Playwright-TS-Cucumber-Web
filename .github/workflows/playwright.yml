@@ -24,16 +24,12 @@ on:
           - yes
           - no
       parallel_runs:
-        description: 'Número de ejecuciones paralelas de pruebas'
+        description: 'Número de ejecuciones paralelas de pruebas (1-30)'
         required: true
         default: '1'
-        type: choice
-        options:
-          - '1'
-          - '2'
-          - '3'
-          - '4'
-          - '5'
+        type: number
+        min: 1
+        max: 30
 
 jobs:
   setup:
@@ -64,8 +60,7 @@ jobs:
     runs-on: ${{ github.event.inputs.os }}
     strategy:
       matrix:
-        parallel_run: [ ${{ github.event.inputs.parallel_runs }} ]
-
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -93,6 +88,8 @@ jobs:
             assets/
             features/
             index.html
+
+
 
 
 
