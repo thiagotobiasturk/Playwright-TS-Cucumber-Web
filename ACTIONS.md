@@ -61,19 +61,19 @@ This job prepares the environment for testing:
    uses: actions/setup-node@v4
     with:
      node-version: ${{ github.event.inputs.node_version }}
-   ```
+ ```
 
 - **Install dependencies**: Installs project dependencies using `npm`.
 
-   ```yml
+```yml
 
   - name: Install dependencies
         run: npm install
-   ```
+```
 
 - **Cache Playwright Chromium**: Caches Chromium to speed up installation in future runs.
 
-   ```yml 
+```yml 
 
       - name: Cache Playwright Chromium
         uses: actions/cache@v4
@@ -83,17 +83,17 @@ This job prepares the environment for testing:
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-chromium-
-    ```
+```
 
 - **Install Playwright Chromium**: Installs Chromium if it's not in the cache.
 
-  ```yml 
+```yml 
 
    - name: Install Playwright Chromium
      if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
      run: npx playwright install chromium
 
-  ``` 
+``` 
 
 
 ### 2. Tests
@@ -113,42 +113,42 @@ This job runs tests in parallel and can be scheduled automatically if specified:
 
 - **Checkout repository**: Clones the repository for access to the source code.
 
-  ```yml
+```yml
       - name: Checkout repository
         uses: actions/checkout@v4
-     ```
+```
 
 
  - **Restore Playwright Chromium cache**: Restores the Chromium cache.
 
-  ```yml
+```yml
       - name: Restore Playwright Chromium cache
         uses: actions/cache@v4
         with:
           path: /home/runner/.cache/ms-playwright/chromium-1112
           key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
-  ```
+```
 
 - **Install dependencies**: Installs project dependencies.
 
-  ```yml
+```yml
       - name: Install dependencies
         run: npm install
-  ```
+```
 
 - **Run Playwright tests**: Executes Playwright tests.
 
- ```yml
+```yml
 
    - name: Run Playwright tests
         run: |
           npm test
           npm run postest
- ```
+```
 
 - **Upload test report**: Uploads the test report if `create_report` is set to `true`.
 
- ```yml
+```yml
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
@@ -159,7 +159,7 @@ This job runs tests in parallel and can be scheduled automatically if specified:
             assets/
             features/
             index.html
- ```
+```
 
 
 ## Running the Workflow
@@ -170,4 +170,4 @@ For more information about GitHub Actions, refer to the [official documentation]
 
 ---
 
-[Execute]()
+[Execute](https://github.com/thiagotobiasturk/Playwright-TS-Cucumber-Web/actions/workflows/playwright.yml)
