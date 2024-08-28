@@ -1,19 +1,22 @@
-name: CI/CD
+name: CI Pipeline
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
     inputs:
       os:
-        description: 'Choose the OS for the workflow'
+        description: 'Sistema operativo para ejecutar el flujo de trabajo'
         required: true
         default: 'ubuntu-latest'
         type: choice
         options:
           - ubuntu-latest
-          - windows-latest
           - macos-latest
+          - windows-latest
       create_report:
-        description: 'Choose whether to create and upload the test report'
+        description: '¿Crear reporte y subir artifacts?'
         required: true
         default: 'no'
         type: choice
@@ -40,8 +43,7 @@ on:
 jobs:
   setup:
     runs-on: ${{ github.event.inputs.os }}
-    if: ${{ github.event.inputs.auto_schedule == 'no' || github.event.inputs.schedule_interval }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -59,16 +61,16 @@ jobs:
             ${{ runner.os }}-playwright-chromium-
 
       - name: Install Playwright Chromium
-        if: steps.cache-playwright-chromium.outputs.cache-hit != 'yes'
+        if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
         run: npx playwright install chromium
 
   tests:
     needs: setup
     runs-on: ${{ github.event.inputs.os }}
-    if: ${{ github.event.inputs.auto_schedule == 'yes' }}
+    if: ${{ github.event.inputs.auto_schedule == 'no' || (github.event.inputs.auto_schedule == 'yes' && github.event.inputs.schedule_interval) }}
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] 
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 
     steps:
       - name: Checkout repository
