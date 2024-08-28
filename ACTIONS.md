@@ -49,49 +49,118 @@ This job prepares the environment for testing:
 
 - **Checkout repository**: Clones the repository for access to the source code.
 
-![image](https://github.com/user-attachments/assets/5436e992-871e-412d-b954-7eca9844df28)
+```yml
+- name: Checkout repository
+  uses: actions/checkout@v4
+```
 
 - **Set up Node.js**: Configures the specified Node.js version.
 
-![image](https://github.com/user-attachments/assets/9e7cbc16-ce72-406f-9d9c-a4470c912e9b)
+ ```yml
+ - name: Set up Node.js
+   uses: actions/setup-node@v4
+    with:
+     node-version: ${{ github.event.inputs.node_version }}
+   ```
 
 - **Install dependencies**: Installs project dependencies using `npm`.
 
-![image](https://github.com/user-attachments/assets/d2ed29bc-7232-473e-a0d7-1289644225c4)
+   ```yml
+
+  - name: Install dependencies
+        run: npm install
+   ```
 
 - **Cache Playwright Chromium**: Caches Chromium to speed up installation in future runs.
 
-![image](https://github.com/user-attachments/assets/9334feb5-9bf4-4c54-b358-48b0f87f0dcd)
+   ```yml 
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        id: cache-playwright-chromium
+        with:
+          path: /home/runner/.cache/ms-playwright/chromium-1112
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-chromium-
+    ```
 
 - **Install Playwright Chromium**: Installs Chromium if it's not in the cache.
 
-![image](https://github.com/user-attachments/assets/c6ca4912-ccf9-4907-b8e0-30f8b31ab4bd)
+  ```yml 
+
+   - name: Install Playwright Chromium
+     if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
+     run: npx playwright install chromium
+
+  ``` 
+
 
 ### 2. Tests
 
 This job runs tests in parallel and can be scheduled automatically if specified:
 
-![image](https://github.com/user-attachments/assets/4cc6e7d4-852d-4155-b421-49439fbdec6a)
+```yml 
+
+ tests:
+    needs: setup
+    runs-on: ${{ github.event.inputs.os }}
+    if: ${{ github.event.inputs.auto_schedule == 'no' || (github.event.inputs.auto_schedule == 'yes' && github.event.inputs.schedule_interval) }}
+    strategy:
+      matrix:
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+``` 
 
 - **Checkout repository**: Clones the repository for access to the source code.
 
-![image](https://github.com/user-attachments/assets/606bd10e-df0b-40f9-97c9-effd54074ffc)
+  ```yml
+      - name: Checkout repository
+        uses: actions/checkout@v4
+     ```
 
-- **Restore Playwright Chromium cache**: Restores the Chromium cache.
 
-![image](https://github.com/user-attachments/assets/a5548083-4a14-49a3-87c3-e27d614e9195)
+ - **Restore Playwright Chromium cache**: Restores the Chromium cache.
+
+  ```yml
+      - name: Restore Playwright Chromium cache
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/ms-playwright/chromium-1112
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+  ```
 
 - **Install dependencies**: Installs project dependencies.
 
-![image](https://github.com/user-attachments/assets/424dec55-fa90-46dc-904e-5b0c17605567)
+  ```yml
+      - name: Install dependencies
+        run: npm install
+  ```
 
 - **Run Playwright tests**: Executes Playwright tests.
 
-![image](https://github.com/user-attachments/assets/0642047f-e89b-4c8d-acb8-2e7ae5c25033)
+ ```yml
+
+   - name: Run Playwright tests
+        run: |
+          npm test
+          npm run postest
+ ```
 
 - **Upload test report**: Uploads the test report if `create_report` is set to `true`.
 
- ![image](https://github.com/user-attachments/assets/a90ed8f1-9a17-4d65-9384-4ce3b651ce0f)
+ ```yml
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: ${{ github.event.inputs.create_report == 'true' }}
+        with:
+          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+          path: |
+            assets/
+            features/
+            index.html
+ ```
+
 
 ## Running the Workflow
 
