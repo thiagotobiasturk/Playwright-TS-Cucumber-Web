@@ -32,7 +32,7 @@ The workflow is triggered via the `workflow_dispatch` event, allowing for custom
 4. **Schedule Interval**: Interval for automatic runs (if applicable).
    - Available options: `daily`, `weekly`, `monthly`
 
-   ![image](https://github.com/user-attachments/assets/f19ff906-2752-4539-8019-daf44452cb35)
+![image](https://github.com/user-attachments/assets/f19ff906-2752-4539-8019-daf44452cb35)
 
 5. **Node Version**: Version of Node.js to use.
    - Available options: `16`, `18`, `20`, `21`
@@ -68,7 +68,7 @@ This job prepares the environment for testing:
 ```yml
 
   - name: Install dependencies
-        run: npm install
+    run: npm install
 ```
 
 - **Cache Playwright Chromium**: Caches Chromium to speed up installation in future runs.
@@ -141,7 +141,7 @@ This job runs tests in parallel and can be scheduled automatically if specified:
 ```yml
 
    - name: Run Playwright tests
-        run: |
+     run: |
           npm test
           npm run postest
 ```
