@@ -36,11 +36,12 @@ on:
           - 'daily'
           - 'weekly'
           - 'monthly'
+
 jobs:
   setup:
     runs-on: ${{ github.event.inputs.os }}
     if: ${{ github.event.inputs.auto_schedule == 'no' || github.event.inputs.schedule_interval }}
-     
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -64,7 +65,7 @@ jobs:
   tests:
     needs: setup
     runs-on: ${{ github.event.inputs.os }}
-    if: ${{ github.event.inputs.auto_run == 'yes' }}
+    if: ${{ github.event.inputs.auto_schedule == 'yes' }}
     strategy:
       matrix:
         parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] 
