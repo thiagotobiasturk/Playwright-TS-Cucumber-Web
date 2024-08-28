@@ -39,7 +39,7 @@ on:
       node_version:
         description: 'Specify the Node.js version to use'
         required: true
-        default: '16'
+        default: '20'
         type: choice
         options:
           - '16'
