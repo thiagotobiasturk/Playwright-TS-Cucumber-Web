@@ -158,4 +158,6 @@ npm run test
 
 
 # Author 🛠️
+Thiago Tobias Turk
+
 www.linkedin.com/in/thiago-tobias-turk-4462542a9
