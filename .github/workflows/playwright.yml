@@ -39,7 +39,7 @@ on:
       node_version:
         description: 'Specify the Node.js version to use'
         required: true
-        default: '20'
+        default: '21'
         type: choice
         options:
           - '16'
@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
-        if: ${{ github.event.inputs.create_report == 'yes' }}
+        if: ${{ github.event.inputs.create_report == 'true' }}
         with:
           name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
           path: |
