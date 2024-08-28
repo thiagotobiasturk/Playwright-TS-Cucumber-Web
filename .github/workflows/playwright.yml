@@ -1,34 +1,98 @@
-name: Playwright Tests
-on:
-  push:
-    branches: [ develop, master ]
-  pull_request:
-    branches: [ develop, master ]
-jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    
-    - name: Run Playwright tests
-      run: npm test
+name: CI/CD
 
-    - name: Upload to test report 
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: | 
-             assets/
-             features/
-             index.html
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'Choose the OS for the workflow'
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+      create_report:
+        description: 'Choose whether to create and upload the test report'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
+      auto_schedule:
+        description: 'Should the workflow run automatically?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      schedule_interval:
+        description: 'Choose the interval for automatic runs (e.g., daily, weekly, monthly )'
+        required: false
+        type: choice
+        options:
+          - 'daily'
+          - 'weekly'
+          - 'monthly'
+
+jobs:
+  setup:
+    runs-on: ${{ github.event.inputs.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        id: cache-playwright-chromium
+        with:
+          path: /home/runner/.cache/ms-playwright/chromium-1112
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-chromium-
+
+      - name: Install Playwright Chromium
+        if: steps.cache-playwright-chromium.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
+
+  tests:
+    needs: setup
+    runs-on: ${{ github.event.inputs.os }}
+    if: ${{ github.event.inputs.auto_schedule == 'no' || (github.event.inputs.auto_schedule == 'yes' && github.event.inputs.schedule_interval) }}
+    strategy:
+      matrix:
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Restore Playwright Chromium cache
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/ms-playwright/chromium-1112
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Playwright tests
+        run: |
+          npm test
+          npm run postest
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: ${{ github.event.inputs.create_report == 'yes' }}
+        with:
+          name: playwright-report-${{ runner.os }}-${{ matrix.parallel_run }}
+          path: |
+            assets/
+            features/
+            index.html

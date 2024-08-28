@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "pretest": "node ./printFile.js",
-    "test": "cucumber-js test || true",
-    "posttest": "npx ts-node src/helper/reports.ts"
+    "test": "cucumber-js test",
+    "postest": "npx ts-node src/helper/reports.ts"
   },
   "keywords": [],
   "author": "Automation Armada",

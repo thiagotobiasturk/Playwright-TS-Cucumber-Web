@@ -2,6 +2,8 @@
 
 ![Diseño sin título (3)](https://github.com/user-attachments/assets/cf2b2195-84f0-4225-8948-bf81e297938a)
 
+[Actions-CI/CD](ACTIONS.md)
+
 
 Playwright-TS-Cucumber-Web is an advanced and highly efficient test automation framework designed to revolutionize your testing process. Our framework is meticulously crafted to optimize the testing workflow, providing you with a seamless 
 experience and powerful testing capabilities.
@@ -26,23 +28,20 @@ Key Features:
 Clone this repository:
 
 ```bash
-git clone https://github.com/tu-usuario/project-infinite.git
+git clone https://github.com/thiagotobiasturk/Playwright-TS-Cucumber-Web.git
 ```
 Navigate to the project folder:
 
 ```bash
- cd project-infinite
+ cd Playwright-TS-Cucumber-Web
 ```
 Install dependencies:
 ```bash
 npm install
 ```
-### Help
+# Help
 
-**Main Methods of Playwright**
-
-
-# Main Methods of Playwright
+### Main Methods of Playwright
 
 | Method                                       | Description                                                                                                      |
 |----------------------------------------------|------------------------------------------------------------------------------------------------------------------|
