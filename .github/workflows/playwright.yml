@@ -1,11 +1,10 @@
-name: CI Pipeline
+name: CI/CD
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       os:
-        description: 'Sistema operativo para ejecutar el flujo de trabajo'
+        description: 'Choose the OS for the workflow'
         required: true
         default: 'ubuntu-latest'
         type: choice
@@ -14,7 +13,7 @@ on:
           - macos-latest
           - windows-latest
       create_report:
-        description: '¿Crear reporte y subir artifacts?'
+        description: 'Choose whether to create and upload the test report'
         required: true
         default: 'no'
         type: choice
