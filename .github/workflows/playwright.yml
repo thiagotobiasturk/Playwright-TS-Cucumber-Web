@@ -20,14 +20,6 @@ on:
         options:
           - yes
           - no
-      auto_run:
-        description: 'Automatically run the pipeline?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - yes
-          - no
       auto_schedule:
         description: 'Should the workflow run automatically?'
         required: true
