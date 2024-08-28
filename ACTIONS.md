@@ -1,53 +1,104 @@
 # Continuous Integration (CI/CD) with GitHub Actions
 
-This project uses GitHub Actions for Continuous Integration (CI) and Continuous Delivery (CD). The workflow is defined through a YAML file that specifies how tests should be run and what actions to take during the process. Below is an overview of how this workflow is configured.
+![image](https://github.com/user-attachments/assets/3add73b2-22b1-4dfe-b583-7e4729634411)
 
-## Workflow Configuration
+![image](https://github.com/user-attachments/assets/8d3f5874-17fd-4d9d-ac90-495c7955788e)
 
-The workflow is set up to be manually triggered using the `workflow_dispatch` event. This allows users to specify various options for running the workflow. The available options are:
+This document explains how the Continuous Integration and Continuous Delivery (CI/CD) workflow is configured using GitHub Actions in our repository.
 
-- **`os`**: Choose the operating system for the workflow.
-  - Options: `ubuntu-latest`, `windows-latest`, `macOS-latest`.
-  
-- **`create_report`**: Specify whether to create and upload a test report.
-  - Options: `yes`, `no`.
-  
-- **`run_parallel_tests`**: Decide if tests should be run in parallel.
-  - Options: `yes`, `no`.
-  
-- **`parallel_test_count`**: If tests are to be run in parallel, specify the number of parallel runs. (Optional, relevant only if `run_parallel_tests` is `yes`).
-  - Options: `1` to `20`.
+## Workflow Overview
 
-## Workflow Description
+The `.github/workflows/playwright.yml` file defines the CI/CD workflow that automates dependency installation, test execution, and report uploading. This workflow can be triggered manually from the GitHub interface or scheduled to run automatically.
 
-1. **Execution Conditions**:
-   - The `test` job runs if `run_parallel_tests` is `no` or if a value is specified for `parallel_test_count`. This setup accommodates both sequential and parallel test executions.
+### Workflow Configuration
 
-2. **Job Configuration**:
-   - **`timeout-minutes`**: Sets a 60-minute timeout for the job.
-   - **`runs-on`**: The workflow runs on the operating system specified by the `os` input.
+The workflow is triggered via the `workflow_dispatch` event, allowing for customizable parameters for execution. These parameters are:
 
-3. **Parallel Execution Strategy**:
-   - The matrix strategy defines a range of possible parallel runs (from 1 to 20).
-   - **`max-parallel`**: Controls the maximum number of parallel runs based on the `parallel_test_count` input.
+1. **OS**: The operating system on which to run the workflow.
+   - Available options: `ubuntu-latest`, `macos-latest`, `windows-latest`
 
-4. **Job Steps**:
-   - **Cache npm dependencies**: Caches npm dependencies to speed up installations in future runs.
-   - **Checkout**: Checks out the source code from the repository.
-   - **Setup Node.js**: Sets up the Node.js version to use (latest LTS version).
-   - **Install dependencies**: Installs project dependencies using `npm ci`.
-   - **Install Playwright Browsers**: Installs the necessary browsers for Playwright tests.
-   - **Run Playwright tests**: Executes the tests defined in the project.
-   - **Upload test report**: If `create_report` is `yes`, uploads test reports as workflow artifacts.
+![image](https://github.com/user-attachments/assets/ec1abc76-7180-4faf-a519-8a114a7ab30a)
+
+2. **Create Report**: Decide whether to create and upload a test report.
+   - Available options: `true`, `false`
+
+![image](https://github.com/user-attachments/assets/867f0867-7b00-4bc0-8a87-98f150613c43)
+
+3. **Auto Schedule**: Determines if the workflow should run automatically.
+   - Available options: `yes`, `no`
+
+![image](https://github.com/user-attachments/assets/52f76615-6737-430e-afab-bc97c578c542)
+
+4. **Schedule Interval**: Interval for automatic runs (if applicable).
+   - Available options: `daily`, `weekly`, `monthly`
+
+   ![image](https://github.com/user-attachments/assets/f19ff906-2752-4539-8019-daf44452cb35)
+
+5. **Node Version**: Version of Node.js to use.
+   - Available options: `16`, `18`, `20`, `21`
+
+![image](https://github.com/user-attachments/assets/f416f31f-3f66-46c2-84e9-6ff859fa1983)
+
+## Workflow Jobs
+
+The file defines two jobs: `setup` and `tests`.
+
+### 1. Setup
+
+This job prepares the environment for testing:
+
+- **Checkout repository**: Clones the repository for access to the source code.
+
+![image](https://github.com/user-attachments/assets/5436e992-871e-412d-b954-7eca9844df28)
+
+- **Set up Node.js**: Configures the specified Node.js version.
+
+![image](https://github.com/user-attachments/assets/9e7cbc16-ce72-406f-9d9c-a4470c912e9b)
+
+- **Install dependencies**: Installs project dependencies using `npm`.
+
+![image](https://github.com/user-attachments/assets/d2ed29bc-7232-473e-a0d7-1289644225c4)
+
+- **Cache Playwright Chromium**: Caches Chromium to speed up installation in future runs.
+
+![image](https://github.com/user-attachments/assets/9334feb5-9bf4-4c54-b358-48b0f87f0dcd)
+
+- **Install Playwright Chromium**: Installs Chromium if it's not in the cache.
+
+![image](https://github.com/user-attachments/assets/c6ca4912-ccf9-4907-b8e0-30f8b31ab4bd)
+
+### 2. Tests
+
+This job runs tests in parallel and can be scheduled automatically if specified:
+
+![image](https://github.com/user-attachments/assets/4cc6e7d4-852d-4155-b421-49439fbdec6a)
+
+- **Checkout repository**: Clones the repository for access to the source code.
+
+![image](https://github.com/user-attachments/assets/606bd10e-df0b-40f9-97c9-effd54074ffc)
+
+- **Restore Playwright Chromium cache**: Restores the Chromium cache.
+
+![image](https://github.com/user-attachments/assets/a5548083-4a14-49a3-87c3-e27d614e9195)
+
+- **Install dependencies**: Installs project dependencies.
+
+![image](https://github.com/user-attachments/assets/424dec55-fa90-46dc-904e-5b0c17605567)
+
+- **Run Playwright tests**: Executes Playwright tests.
+
+![image](https://github.com/user-attachments/assets/0642047f-e89b-4c8d-acb8-2e7ae5c25033)
+
+- **Upload test report**: Uploads the test report if `create_report` is set to `true`.
+
+ ![image](https://github.com/user-attachments/assets/a90ed8f1-9a17-4d65-9384-4ce3b651ce0f)
 
 ## Running the Workflow
 
-To run the workflow, follow these steps:
+You can manually trigger this workflow from the GitHub interface, where you can select the available options for the parameters. You can also configure an automatic schedule if preferred.
 
-1. Navigate to the **Actions** tab in your GitHub repository.
-2. Select the **CI/CD** workflow.
-3. Click on the **Run workflow** button.
-4. Fill out the required options in the popup form and click **Run workflow**.
+For more information about GitHub Actions, refer to the [official documentation](https://docs.github.com/en/actions).
 
-That's it! Your CI/CD workflow is now configured and ready to automate tests and report generation for your project.
+---
 
+[Execute]()
