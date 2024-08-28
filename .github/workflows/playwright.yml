@@ -1,11 +1,10 @@
 name: CI/CD
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       os:
-        description: 'Operating System for the runner (ubuntu-latest, windows-latest, macos-latest)'
+        description: 'Choose the OS for the workflow'
         required: true
         default: 'ubuntu-latest'
         type: choice
@@ -14,7 +13,7 @@ on:
           - windows-latest
           - macos-latest
       create_report:
-        description: 'Create a test report?'
+        description: 'Choose whether to create and upload the test report'
         required: true
         default: 'no'
         type: choice
@@ -29,25 +28,27 @@ on:
         options:
           - yes
           - no
-      frequency:
-        description: 'Frequency for automatic execution (daily, weekly, monthly)'
-        required: false
-        default: 'daily'
+      auto_schedule:
+        description: 'Should the workflow run automatically?'
+        required: true
+        default: 'no'
         type: choice
         options:
-          - daily
-          - weekly
-          - monthly
-      parallel_runs:
-        description: 'Number of parallel runs'
-        required: true
-        default: 1
-        type: number
-
+          - 'yes'
+          - 'no'
+      schedule_interval:
+        description: 'Choose the interval for automatic runs (e.g., daily, weekly, monthly )'
+        required: false
+        type: choice
+        options:
+          - 'daily'
+          - 'weekly'
+          - 'monthly'
 jobs:
   setup:
     runs-on: ${{ github.event.inputs.os }}
-
+    if: ${{ github.event.inputs.auto_schedule == 'no' || github.event.inputs.schedule_interval }}
+     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -74,7 +75,7 @@ jobs:
     if: ${{ github.event.inputs.auto_run == 'yes' }}
     strategy:
       matrix:
-        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] # Asumiendo que se debe usar esta matriz
+        parallel_run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] 
 
     steps:
       - name: Checkout repository
