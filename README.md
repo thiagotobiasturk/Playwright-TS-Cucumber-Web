@@ -153,7 +153,7 @@ Then(/^the user should see "([^"]*)"$/, async function (expectedMessage: string)
 Run Test :
 
 ```bash
-npm run test
+npm test
 ```
 
 
