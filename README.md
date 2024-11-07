@@ -173,4 +173,7 @@ npm test
 # Author 🛠️
 Thiago Tobias Turk
 
-www.linkedin.com/in/thiago-tobias-turk-4462542a9
+<div align="left">
+  <a href="https://www.linkedin.com/in/thiago-tobias-turk-4462542a9/" target="_blank">
+    <img src="https://img.shields.io/badge/linkedin-%231E77B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" style="margin-bottom: 5px; margin-right: 10px;" />
+  </a>
